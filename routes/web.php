@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KelurahanController;
+use App\Http\Controllers\PasiensController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,19 +30,26 @@ Route::middleware('splade')->group(function () {
     // Registers routes to support async File Uploads with Filepond...
     Route::spladeUploads();
 
-    Route::get('/', function () {
-        return view('welcome');
+    Route::group(['middleware' => ['auth', 'admin']], function () {
+        Route::get('/', function () {
+            return view('dashboard');
+        })->middleware(['verified'])->name('dashboard');
+
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::resource('/kelurahan', KelurahanController::class);
+        Route::resource('/users', UsersController::class);
+        Route::resource('/pasien', PasiensController::class);
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', function () {
             return view('dashboard');
         })->middleware(['verified'])->name('dashboard');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        Route::resource('/kelurahan', KelurahanController::class);
+        Route::resource('/pasien', PasiensController::class);
     });
 
     require __DIR__.'/auth.php';

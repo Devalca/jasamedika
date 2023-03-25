@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelurahan;
+use App\Models\Pasien;
 use App\Tables\Kelurahans;
 use Illuminate\Http\Request;
 use ProtoneMedia\Splade\Facades\Toast;
@@ -106,8 +107,13 @@ class KelurahanController extends Controller
      */
     public function destroy(Kelurahan $kelurahan)
     {
-        $kelurahan->delete();
-        Toast::title('Success delete kelurahan!')->success()->backdrop();
+        $cek_pasien = Pasien::where('kelurahan_id', $kelurahan->id)->first();
+        if($cek_pasien != null) {
+            Toast::title('Kelurahan is still in use!')->danger()->backdrop();
+        } else {
+            $kelurahan->delete();
+            Toast::title('Success delete kelurahan!')->success()->backdrop();
+        }
         return redirect()->route('kelurahan.index');
     }
 }
