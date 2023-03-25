@@ -15,3 +15,13 @@
 ## Package External
     - Splade (Vue + tailwind)
     - Brazer Kit (Vue)
+
+## How to Run
+    DB jasamedika
+    Run composer install.
+    Run cp .env.example .env.
+    Run npm install
+    Run php artisan key:generate.
+    Run php artisan migrate.
+    Run php artisan serve.
+    Go to link localhost:8000.
